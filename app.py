@@ -1,4 +1,5 @@
 from flask import Flask,render_template
+import sqlite3
 app = Flask(__name__)
 
 @app.route('/')
@@ -24,7 +25,25 @@ def index():
 def weather():
     ten="晴れ"
     return render_template('weather.html',today =ten)
-    var = input('入力してに')
+
+@app.route('/dbtest')
+def dbtest():
+    conn = sqlite3.connect('flasktest.db')
+    c = conn.cursor()
+
+    c.execute("SELECT name,age,addres FROM user WHERE id = 1")
+    user_info = c.fetchone()
+    
+    c.close()
+
+    print(user_info)
+
+    return render_template('dbtest.html',db_userinfo = user_info)
+
+@app.route('/add')
+def add_get():
+    return render_template('add.html')
+    
 
 
 
