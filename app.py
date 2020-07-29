@@ -66,9 +66,37 @@ def task_list():
     print(task_list_py)
     return render_template("tasklist.html",task_list = task_list_py)
 
+
+@app.route("/edit/<int:id>")
+def edit(id):
+    conn = sqlite3.connect('flasktest.db')
+    c = conn.cursor()
+    c.execute("SELECT task FROM task WHERE id =?",(id,))
+    py_task=c.fetchone()
+    print(py_task)
+    c.close()
+    task = py_task[0]
+    py_item={"dic_id":id,"dic_task":task}
+    return render_template("edit.html",html_task = py_item)
+
+@app.route("/edit",methods=['post'])
+def update_task():
+    item_id = request.form.get("task_id")
+    #入力フォームから撮ってきた時点では文字列なのでint型に変換
+    item_id = int(item_id)
+    py_task = request.form.get('task')
+    conn = sqlite3.connect('flasktest.db')
+    c = conn.cursor()
+    c.execute("UPDATE task SET task = ? WHERE id = ?",(py_task,item_id))
+    conn.commit()
+    c.close()
+    return redirect('/list')
+
 @app.errorhandler(404)
 def notfound(code):
     return "404エラーだお_:(´ཀ`」 ∠):"
+
+
 
 
 
