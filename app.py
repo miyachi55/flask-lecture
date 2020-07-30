@@ -75,9 +75,12 @@ def edit(id):
     py_task=c.fetchone()
     print(py_task)
     c.close()
-    task = py_task[0]
-    py_item={"dic_id":id,"dic_task":task}
-    return render_template("edit.html",html_task = py_item)
+    if py_task is None:
+        return "タスクがありません(๑╹ω╹๑ )"
+    else:
+        task = py_task[0]
+        py_item={"dic_id":id,"dic_task":task}
+        return render_template("edit.html",html_task = py_item)
 
 @app.route("/edit",methods=['post'])
 def update_task():
